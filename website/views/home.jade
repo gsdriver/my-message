@@ -1,0 +1,23 @@
+html
+  head
+    title=title
+    link(href='/css/bootstrap.min.css', rel='stylesheet')
+  body
+    div.container
+      div.jumbotron
+        h1 Hello!
+
+        if user
+          p Welcome, #{user.fullName}
+          p
+            a.small(href="message") Manage my message
+          form(action='/logout', method='POST')
+            button.btn.btn-default(type="submit") Logout
+        else
+          p Welcome to the My Message console, ready to get started?
+          p
+            a.btn.btn-primary(href="/login") Login now
+          p
+            span.small Don't have an account?
+            span &nbsp;
+            a.small(href="/register") Register now
