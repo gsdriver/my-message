@@ -1,0 +1,14 @@
+html
+  head
+    title=title
+    link(href='/css/bootstrap.min.css', rel='stylesheet')
+  body
+    div.container
+      div.jumbotron
+        h1 Manage your Alexa Message
+
+        if message
+          p Your current message is #{message}
+        form(action='/savemessage', method='POST')
+          textarea(rows="4" cols="40" name="message")
+          button.btn.btn-default(type="submit") Save Message

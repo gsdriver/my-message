@@ -9,6 +9,7 @@
   "author": "gsdriver@live.com",
   "license": "MIT",
   "dependencies": {
+    "aws-sdk": "^2.9.0",
     "body-parser": "^1.16.0",
     "cookie-parser": "^1.4.3",
     "csurf": "^1.9.0",

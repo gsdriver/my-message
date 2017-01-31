@@ -9,8 +9,10 @@ html
 
         if user
           p Welcome, #{user.fullName}
+          if message
+            p Your current message is #{message}
           p
-            a.small(href="message") Manage my message
+            a.small(href="message/?username=#{user.username}") Manage my message
           form(action='/logout', method='POST')
             button.btn.btn-default(type="submit") Logout
         else
