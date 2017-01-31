@@ -1,5 +1,6 @@
 var express = require('express');
 var path = require('path');
+var bodyParser = require('body-parser');
 var stormpath = require('express-stormpath');
 var storage = require('./storage');
 
@@ -8,6 +9,8 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(stormpath.init(app, {
@@ -24,7 +27,7 @@ app.get('/', stormpath.getUser, function(req, res) {
     storage.loadMessage(req.user.username, (message) => {
       res.render('home', {
         title: 'My Message Console',
-        message: message.message
+        message: message
       });
     });
   }
@@ -40,8 +43,15 @@ app.get('/message', function(req, res) {
       res.render('message', {
         title: 'My Message Console',
         username: req.query.username,
-        message: message.message
+        message: message
       });
+  });
+});
+
+app.post('/savemessage', function(req, res) {
+  storage.saveMessage(req.body.username, req.body.message, () => {
+    // Saved
+    res.redirect('/');
   });
 });
 

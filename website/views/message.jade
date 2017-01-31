@@ -4,11 +4,14 @@ html
     link(href='/css/bootstrap.min.css', rel='stylesheet')
   body
     div.container
-      div.jumbotron
+      div.page-header
         h1 Manage your Alexa Message
 
-        if message
-          p Your current message is #{message}
         form(action='/savemessage', method='POST')
-          textarea(rows="4" cols="40" name="message")
-          button.btn.btn-default(type="submit") Save Message
+          input(type="hidden", name="username" value=username)
+          if message
+            textarea(rows="4" class="form-control" cols="40" name="message") #{message}
+          else
+            textarea(rows="4" class="form-control" cols="40" name="message")
+          p
+          button.btn.btn-primary(type="submit") Save Message

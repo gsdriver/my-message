@@ -10,7 +10,7 @@ html
         if user
           p Welcome, #{user.fullName}
           if message
-            p Your current message is #{message}
+            p Your current message is "#{message}"
           p
             a.small(href="message/?username=#{user.username}") Manage my message
           form(action='/logout', method='POST')
