@@ -7,19 +7,13 @@ html
       div.jumbotron
         h1 Hello!
 
-        if user
-          p Welcome, #{user.fullName}
+        if userid
+          p Welcome, #{username}
           if message
             p Your current message is "#{message}"
           p
-            a.small(href="message/?username=#{user.username}") Manage my message
-          form(action='/logout', method='POST')
-            button.btn.btn-default(type="submit") Logout
+            a.small(href="message/?id=#{userid}") Manage my message
         else
-          p Welcome to the My Message console, ready to get started?
+          p In order to use My Message, please log in with Facebook
           p
-            a.btn.btn-primary(href="/login") Login now
-          p
-            span.small Don't have an account?
-            span &nbsp;
-            a.small(href="/register") Register now
+            a.btn.btn-primary(href="/login/facebook") Login now

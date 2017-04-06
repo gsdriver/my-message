@@ -1,0 +1,60 @@
+block content
+  script().
+    window.fbAsyncInit = function() {
+        FB.init({
+          appId      : '#{fbAppID}',
+          cookie     : true,  // enable cookies to allow the server to access
+                              // the session
+          xfbml      : true,  // parse social plugins on this page
+          version    : 'v2.8' // use graph api version 2.8
+        });
+        FB.getLoginStatus(function(response) {
+            console.log("Got status " + response.status);
+            if (response.status == "connected")
+            {
+                post('/home', {accessToken: response.authResponse.accessToken});
+            }
+            else
+            {
+                post('/home');
+            }
+        });
+    };
+    // Load the SDK asynchronously
+    (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/en_US/sdk.js";
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+    // Post the response
+    function post(path, params) {
+        var form = document.createElement("form");
+        form.setAttribute("method", "post");
+        form.setAttribute("action", path);
+
+        for(var key in params) {
+            if(params.hasOwnProperty(key)) {
+                var hiddenField = document.createElement("input");
+                hiddenField.setAttribute("type", "hidden");
+                hiddenField.setAttribute("name", key);
+                hiddenField.setAttribute("value", params[key]);
+
+                form.appendChild(hiddenField);
+             }
+        }
+
+        document.body.appendChild(form);
+        form.submit();
+    }
+    // Draw animation dots as we load
+    var dots = window.setInterval( function() {
+        var wait = document.getElementById("wait");
+        if ( wait.innerHTML.length > 12 )
+            wait.innerHTML = "Loading";
+        else
+            wait.innerHTML += ".";
+        }, 100);
+  h1= title
+  p#wait Loading
