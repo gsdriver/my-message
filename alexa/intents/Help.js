@@ -1,0 +1,14 @@
+//
+// Handles help - which just tells them the song and that they can vote
+//
+
+'use strict';
+
+module.exports = {
+  handleIntent: function(intent, session, context, callback) {
+    // Tell them the song if we have it
+    utils.getSong(session, (helpText, reprompt, isLinked) => {
+      callback(session, context, null, helpText, !isLinked, reprompt);
+    });
+  },
+};

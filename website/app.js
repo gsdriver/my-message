@@ -80,7 +80,7 @@ app.post('/home', (req, res) => {
     FB.setAccessToken(req.body.accessToken);
     FB.api('/me', {fields: ['id', 'name']}, (fbres) => {
       if (fbres && !fbres.error) {
-        storage.loadMessage(fbres.id, (message) => {
+        storage.loadSavedMessage(fbres.id, (message) => {
           res.render('home', {title: 'My Message Console', userid: fbres.id,
             username: fbres.name, message: message});
         });
@@ -94,7 +94,7 @@ app.post('/home', (req, res) => {
 });
 
 app.get('/message', (req, res) => {
-  storage.loadMessage(req.query.id, (message) => {
+  storage.loadSavedMessage(req.query.id, (message) => {
     res.render('message', {
       title: 'My Message Console',
       userid: req.query.id,
@@ -104,7 +104,8 @@ app.get('/message', (req, res) => {
 });
 
 app.post('/savemessage', (req, res) => {
-  storage.saveMessage(req.body.userid, req.body.message, () => {
+  // For now, we only support saving a message to yourself
+  storage.saveMessage(req.body.userid, req.body.userid, req.body.message, () => {
     res.redirect('/');
   });
 });

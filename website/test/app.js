@@ -19,10 +19,12 @@ function createMessages(callback) {
   var params = {
     TableName : 'MyMessageData',
     KeySchema: [
-      { AttributeName: 'UserID', KeyType: 'HASH'}
+      { AttributeName: 'FromUserID', KeyType: 'HASH'},
+      { AttributeName: 'ToUserID', KeyType: 'RANGE'},
     ],
     AttributeDefinitions: [
-      { AttributeName: 'UserID', AttributeType: 'S'}
+      { AttributeName: 'FromUserID', AttributeType: 'S'},
+      { AttributeName: 'ToUserID', AttributeType: 'S' },
     ],
     ProvisionedThroughput: {
       ReadCapacityUnits: 5,
@@ -52,5 +54,12 @@ function createUsers(callback) {
   dynamodb.createTable(params, callback);
 }
 
+function deleteMessages(callback) {
+  var dynamodb = new AWS.DynamoDB();
+
+  dynamodb.deleteTable({TableName: 'MyMessageData'}, callback);
+}
+
+//deleteMessages((err) => console.log("Delete Messages " + err));
 createMessages((err) => console.log("Create Messages " + err));
-createUsers((err) => console.log("Create Users " + err));
+//createUsers((err) => console.log("Create Users " + err));
