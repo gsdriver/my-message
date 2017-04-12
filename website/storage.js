@@ -18,9 +18,9 @@ if (process.env.LOCALDB) {
   });
 }
 
-const storage = (() => {
-  const dynamodb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
+const dynamodb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
 
+const storage = (() => {
   return {
     // Registers a new user in our User DB
     registerUser: function(userID, name, email, callback) {
@@ -48,27 +48,43 @@ const storage = (() => {
     },
     // Loads all messages for a given user (could be from multiple users)
     loadMyMessages: function(userid, callback) {
-      var params = {};
+      const params = {};
 
       params.TableName = 'MyMessageData';
       params.KeyConditionExpression = '#D = :partitionkeyval';
       params.ExpressionAttributeValues = {':partitionkeyval': {S: userid}};
       params.ExpressionAttributeNames = {'#D': 'ToUserID'};
-      dynamodb.query(params, function(error, data) {
+      dynamodb.query(params, (error, data) => {
         if (error || (data.Items == undefined)) {
           // Sorry, we don't have messages for this user
-          console.log("Error " + error + " data " + JSON.stringify(data));
-          callback("No messages for " + userid, null);
+          console.log('Error ' + error + ' data ' + JSON.stringify(data));
+          callback('No messages for ' + userid, null);
         } else {
           // Process into an array
-          const votes = [];
+          const messages = [];
+          const userids = [];
 
-          data.Items.forEach(vote => {
-            const voteData = {date: vote.date.S, userID: vote.userID.S, vote: vote.vote.S};
-            votes.push(voteData);
+          // Start by loading the names of all users
+          data.Items.forEach((message) => {
+            userids.push(message.FromUserID.S);
           });
+          getUserNames(userids, (err, usernames) => {
+            data.Items.forEach((message) => {
+              let name;
 
-          callback(null, votes);
+              if (usernames && usernames[message.FromUserID.S]) {
+                name = usernames[message.FromUserID.S];
+              } else {
+                name = 'Unknown user';
+              }
+
+              const msgData = {from: name, message: message.Message.S,
+                timestamp: message.TimeStamp.S};
+              messages.push(msgData);
+            });
+
+            callback(null, messages);
+          });
         }
       });
     },
@@ -89,5 +105,39 @@ const storage = (() => {
     },
   };
 })();
+
+// Internal functions
+function getUserNames(userIDs, callback) {
+  const params = {};
+  const userKeys = [];
+  const users = {};
+
+  userIDs.forEach((userID) => userKeys.push({UserID: {S: userID}}));
+  params.RequestItems = {};
+  params.RequestItems.MyMessageUsers = {};
+  params.RequestItems.MyMessageUsers.Keys = userKeys;
+  dynamodb.batchGetItem(params, (error, data) => {
+    if (error || (data.Responses == undefined)) {
+      // Sorry, we weren't able to load these users
+      console.log('batchGetItem failed ' + error);
+      callback('Couldn\'t load users', null);
+    } else {
+      // Process into an array
+      data.Responses.MyMessageUsers.forEach((userData) => {
+        let name;
+
+        if (userData.name && userData.name.S && (userData.name.S.length > 0)) {
+          name = userData.name.S;
+        } else {
+          name = 'Unknown user';
+        }
+
+        users[userData.UserID.S] = name;
+      });
+
+      callback(null, users);
+    }
+  });
+}
 
 module.exports = storage;

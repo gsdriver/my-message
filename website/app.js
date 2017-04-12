@@ -110,6 +110,24 @@ app.post('/savemessage', (req, res) => {
   });
 });
 
+// Return the list of messages for the given user
+// This returns up to the last 100 messages in a single list
+app.get('/getmessages', (req, res, next) => {
+  storage.loadMyMessages(req.query.userid, (err, messages) => {
+    if (err) {
+      res.json(err);
+    } else {
+      const myMessages = [];
+      let i;
+
+      messages.sort((a, b) => (a.timestamp - b.timestamp));
+      for (i = 0; i < Math.min(100, messages.length); i++) {
+        myMessages.push(messages[i]);
+      }
+      res.json(myMessages);
+    }
+  });
+});
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

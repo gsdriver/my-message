@@ -19,8 +19,8 @@ function createMessages(callback) {
   var params = {
     TableName : 'MyMessageData',
     KeySchema: [
-      { AttributeName: 'FromUserID', KeyType: 'HASH'},
-      { AttributeName: 'ToUserID', KeyType: 'RANGE'},
+      { AttributeName: 'ToUserID', KeyType: 'HASH'},
+      { AttributeName: 'FromUserID', KeyType: 'RANGE'},
     ],
     AttributeDefinitions: [
       { AttributeName: 'FromUserID', AttributeType: 'S'},
@@ -60,6 +60,28 @@ function deleteMessages(callback) {
   dynamodb.deleteTable({TableName: 'MyMessageData'}, callback);
 }
 
+function GetAllMessages(callback)
+{
+    var dynamodb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
+    dynamodb.scan({TableName: 'MyMessageData'}, function (error, data) {
+        var userData;
+
+        if (error || (data.Items == undefined))
+        {
+            callback(error, null);
+        }
+        else
+        {
+            callback(null, data.Items);
+        }
+    });
+}
+
 //deleteMessages((err) => console.log("Delete Messages " + err));
 createMessages((err) => console.log("Create Messages " + err));
-//createUsers((err) => console.log("Create Users " + err));
+createUsers((err) => console.log("Create Users " + err));
+//GetAllMessages((err, messages) => {
+//  if (messages) {
+//   messages.forEach(message => console.log(JSON.stringify(message)));
+//  }
+//});
