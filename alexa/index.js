@@ -1,16 +1,18 @@
 'use strict';
 
 const Alexa = require('alexa-sdk');
-const request = require('request');
+const GetMessage = require('./intents/GetMessage');
+const ReadMessage = require('./intents/ReadMessage');
 
 // Handlers for our skill
 const handlers = {
   'LaunchRequest': function() {
-    this.emit('HelloWorldIntent');
+    this.emit('GetMessageIntent');
   },
-  'GetMessageIntent': function() {
-    this.emit(':tell', 'Here\'s your message!');
-  },
+  'GetMessageIntent': GetMessage.handleIntent,
+  'AMAZON.NextIntent': ReadMessage.readNext,
+  'AMAZON.PreviousIntent': ReadMessage.readPrevious,
+  'AMAZON.RepeatIntent': ReadMessage.readSame,
 };
 
 exports.handler = function(event, context, callback) {
@@ -19,11 +21,3 @@ exports.handler = function(event, context, callback) {
   alexa.registerHandlers(handlers);
   alexa.execute();
 };
-
-function loadSong(callback) {
-  // Call the service to pull the song details
-  request.get('http://localhost:3000/song', (err, res, body) => {
-    console.log(body);
-    callback(err, JSON.parse(body));
-  });
-}

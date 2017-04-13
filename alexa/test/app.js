@@ -6,7 +6,10 @@ function BuildEvent(argv)
   var help = {'name': 'AMAZON.HelpIntent', 'slots': {}};
   var stop = {'name': 'AMAZON.StopIntent', 'slots': {}};
   var cancel = {'name': 'AMAZON.CancelIntent', 'slots': {}};
-  var voteGreat = {'name': 'VoteGreatIntent', 'slots': {}};
+  var getmessage = {'name': 'GetMessageIntent', 'slots': {}};
+  var next = {'name': 'AMAZON.NextIntent', 'slots': {}};
+  var previous = {'name': 'AMAZON.PreviousIntent', 'slots': {}};
+  var repeat = {'name': 'AMAZON.RepeatIntent', 'slots': {}};
 
   var lambda = {
     "session": {
@@ -14,7 +17,8 @@ function BuildEvent(argv)
       "application": {
         "applicationId": "amzn1.ask.skill.fa911a26-47e2-467b-9d75-3fc8c2ca76a7"
       },
-      "attributes": {},
+      //"attributes": {},
+      "attributes": {"messages":[{"from":"Garrett Vargas","message":"This isn't my first message","timestamp":"1492001018660"},{"from":"Ryan Vargas","message":"Hi Dad, nice to see you","timestamp":"1492001018660"},{"from":"Suger","message":"I like steak","timestamp":"1492001018660"}],"read":1},
       //"attributes": {"song":{"date":"2017-03-31","title":"CRAZY ON YOU","artist":"HEART","comments":"This song is featured on Guitar Hero, which of course I am an expert at."}},
       "user": {
           "userId": "amzn1.ask.account.AGZKAFFHJJ54RQE4FKPXH3I5SU2QLHMROEHH4IXWTCADH7CZMD7LJ5NJ2MQ7QUC53ML2BY47X6TS6ZIRMNXEJLTY7VCVZTDPJH5RATRKMEIFN5JIFG63OQDW2WONCAWX3RESZHYK3T4LVWNJQYU5OJI75A7GBTDBVRJBD3BZXSQAQ3P7CPJ5SDW3OZKH4RDQCO2ILBKQGVSJYPI",
@@ -60,8 +64,14 @@ function BuildEvent(argv)
     return null;
   } else if (argv[2] == 'launch') {
     return openEvent;
-  } else if (argv[2] == 'votegreat') {
-    lambda.request.intent = voteGreat;
+  } else if (argv[2] == 'getmessage') {
+    lambda.request.intent = getmessage;
+  } else if (argv[2] == 'next') {
+    lambda.request.intent = next;
+  } else if (argv[2] == 'repeat') {
+    lambda.request.intent = repeat;
+  } else if (argv[2] == 'previous') {
+    lambda.request.intent = previous;
   } else if (argv[2] == 'help') {
     lambda.request.intent = help;
   } else if (argv[2] == 'stop') {
