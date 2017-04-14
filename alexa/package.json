@@ -1,0 +1,29 @@
+{
+  "name": "mymessage-alexa",
+  "version": "1.0.0",
+  "description": "Alexa companion for My Message",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "gsdriver@live.com",
+  "license": "ISC",
+  "dependencies": {
+    "alexa-sdk": "^1.0.8",
+    "facebook-node": "0.0.3",
+    "request": "^2.81.0"
+  },
+  "devDependencies": {
+    "del": "^2.2.2",
+    "eslint": "^3.19.0",
+    "eslint-config-google": "^0.7.1",
+    "eslint-html-reporter": "^0.5.2",
+    "gulp": "^3.9.1",
+    "gulp-eslint": "^3.0.1",
+    "gulp-tap": "^0.1.3",
+    "gulp-zip": "^4.0.0"
+  }
+}

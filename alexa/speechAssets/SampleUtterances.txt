@@ -1,0 +1,8 @@
+GetMessageIntent get my messages
+GetMessageIntent get messages
+GetMessageIntent hear my messages
+GetMessageIntent hear messages
+GetMessageIntent play my messages
+GetMessageIntent play messages
+GetMessageIntent listen to my messages
+GetMessageIntent listen to messages
