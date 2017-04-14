@@ -10,19 +10,16 @@
       "intent": "AMAZON.CancelIntent"
     },
     {
-      "intent": "VoteExcellentIntent"
+      "intent": "GetMessageIntent"
     },
     {
-      "intent": "VoteGreatIntent"
+      "intent": "AMAZON.NextIntent"
     },
     {
-      "intent": "VoteDecentIntent"
+      "intent": "AMAZON.PreviousIntent"
     },
     {
-      "intent": "VoteSucksIntent"
-    },
-    {
-      "intent": "VoteTerribleIntent"
+      "intent": "AMAZON.RepeatIntent"
     }
   ]
 }

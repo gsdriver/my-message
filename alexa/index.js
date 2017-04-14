@@ -9,10 +9,19 @@ const handlers = {
   'LaunchRequest': function() {
     this.emit('GetMessageIntent');
   },
+  'AMAZON.HelpIntent': function() {
+    this.emit('GetMessageIntent');
+  },
   'GetMessageIntent': GetMessage.handleIntent,
   'AMAZON.NextIntent': ReadMessage.readNext,
   'AMAZON.PreviousIntent': ReadMessage.readPrevious,
   'AMAZON.RepeatIntent': ReadMessage.readSame,
+  'AMAZON.StopIntent': function() {
+    this.emit('AMAZON.CancelIntent');
+  },
+  'AMAZON.CancelIntent': function() {
+    this.emit(':tell', 'Goodbye');
+  },
 };
 
 exports.handler = function(event, context, callback) {
