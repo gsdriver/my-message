@@ -106,10 +106,18 @@ app.get('/message', (req, res) => {
 });
 
 app.post('/savemessage', (req, res) => {
-  // For now, we only support saving a message to yourself
-  storage.saveMessage(req.body.fromid, req.body.toid, req.body.message, () => {
+  // Save or delete
+  if (req.body.action === 'delete') {
+    storage.deleteMessage(req.body.fromid, req.body.toid, () => {
+      res.redirect('/');
+    });
+  } else if (req.body.action === 'save') {
+    storage.saveMessage(req.body.fromid, req.body.toid, req.body.message, () => {
+      res.redirect('/');
+    });
+  } else {
     res.redirect('/');
-  });
+  }
 });
 
 // Return the list of messages for the given user

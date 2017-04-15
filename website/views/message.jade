@@ -14,4 +14,6 @@ block content
         else
           textarea(rows="4" class="form-control" cols="40" name="message")
         p
-        button.btn.btn-primary(type="submit") Save Message
+        div.btn-toolbar
+          button.btn.btn-primary(type="submit" name="action" value="save") Save Message
+          button.btn(type="submit" name="action" value="delete") Delete Message

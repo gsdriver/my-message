@@ -57,7 +57,7 @@ function readMessage(attributes, emit, readIncrement) {
         speech += 'Your previous message is ';
       }
 
-      speech += ('from ' + messages[read].from + '. ');
+      speech += ('from ' + messages[read].from + ' sent ' + formatDate(messages[read].timestamp) + '. ');
       speech += '<break time="200ms"/>';
       speech += messages[read].message;
       attributes['read'] = read;
@@ -67,4 +67,36 @@ function readMessage(attributes, emit, readIncrement) {
 
     emit(':ask', speech, reprompt);
   }
+}
+
+function formatDate(date) {
+  const now = new Date();
+  const messageDate = new Date(parseInt(date));
+  let result;
+  const monthMap = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
+    'August', 'September', 'October', 'November', 'December'];
+
+  if ((now.getMonth() == messageDate.getMonth()) && (now.getDate() == messageDate.getDate())) {
+    result = 'today';
+  } else {
+    // Try yesterday
+    now.setDate(now.getDate() - 1);
+    if ((now.getMonth() == messageDate.getMonth()) && (now.getDate() == messageDate.getDate())) {
+      result = 'yesterday';
+    } else {
+      // Read the month and day
+      result = monthMap[messageDate.getMonth()] + ' ' + messageDate.getDate();
+    }
+  }
+
+  // And the time (hour and minute)
+  let hour = messageDate.getHours();
+  let isAm = true;
+  if (hour > 12) {
+    hour -= 12;
+    isAm = false;
+  }
+
+  result += (' at ' + hour + ':' + messageDate.getMinutes() + ((isAm) ? ' AM' : ' PM'));
+  return result;
 }

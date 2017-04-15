@@ -103,6 +103,19 @@ const storage = (() => {
         }
       });
     },
+    deleteMessage: function(fromUserID, toUserID, callback) {
+      // Delete a message associated with this user in our DB
+      dynamodb.deleteItem({TableName: 'MyMessageData',
+        Key: {FromUserID: {S: fromUserID},
+          ToUserID: {S: toUserID}}}, (err, data) => {
+        if (err) {
+          console.log(err, err.stack);
+        }
+        if (callback) {
+          callback();
+        }
+      });
+    },
   };
 })();
 
