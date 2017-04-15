@@ -19,6 +19,7 @@ module.exports = {
 function readMessage(attributes, emit, readIncrement) {
   // See if we have messages that we can read
   let speech;
+  let reprompt;
   const messages = attributes['messages'];
 
   if (!messages) {
@@ -31,8 +32,20 @@ function readMessage(attributes, emit, readIncrement) {
     }
     read += readIncrement;
 
+    // Can they say previous, repeat, next?
+    reprompt = 'You can say repeat to hear this message again';
+    if (read < (messages.length - 1)) {
+      reprompt += ' or next to hear the next message';
+    }
+    if (read > 0) {
+      reprompt += ' or previous to hear the previous message';
+    }
+    reprompt += '.';
+
     if (read >= messages.length) {
-      emit(':tell', 'You have already read all messages.');
+      speech = 'You have already read all messages. ' + reprompt;
+    } else if (read < 0) {
+      speech = 'You were already on the first message. ' + reprompt;
     } else {
       // OK, we're going to read a message
       if (readIncrement > 0) {
@@ -43,19 +56,14 @@ function readMessage(attributes, emit, readIncrement) {
         speech = 'Your previous message is ';
       }
 
-      speech += ('from ' + messages[read].from + ' - ');
+      speech += ('from ' + messages[read].from + '. ');
+      speech += '<break time="200ms"/>';
       speech += messages[read].message;
       attributes['read'] = read;
 
-      if (read == (messages.length - 1)) {
-        // Now reading the last one
-        emit(':tell', speech);
-      } else {
-        // There are still more messages
-        const reprompt = 'Say more to hear more messages.';
-        speech += ('. ' + reprompt);
-        emit(':ask', speech, reprompt);
-      }
+      speech += ('.<break time="200ms"/> ' + reprompt);
     }
+
+    emit(':ask', speech, reprompt);
   }
 }

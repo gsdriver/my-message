@@ -17,7 +17,7 @@ passport.use(new Strategy({
     clientID: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_TOKEN,
     callbackURL: process.env.FB_CALLBACK + '/login/facebook/return',
-    profileFields: ['id', 'displayName', 'email'],
+   profileFields: ['id', 'displayName', 'email'],
   }, (accessToken, refreshToken, profile, cb) => {
     // In this example, the user's Facebook profile is supplied as the user
     // record.  In a production-quality application, the Facebook profile should
@@ -58,7 +58,7 @@ app.use(passport.session());
 
 // Login pages to do OAuth
 app.get('/login/facebook',
-  passport.authenticate('facebook', {scope: ['email']}));
+  passport.authenticate('facebook', {scope: ['user_friends', 'email']}));
 
 app.get('/login/facebook/return',
   passport.authenticate('facebook', {failureRedirect: '/'}), (req, res) => {
@@ -80,9 +80,9 @@ app.post('/home', (req, res) => {
     FB.setAccessToken(req.body.accessToken);
     FB.api('/me', {fields: ['id', 'name']}, (fbres) => {
       if (fbres && !fbres.error) {
-        storage.loadSavedMessage(fbres.id, (message) => {
+        loadFriends(fbres.id, fbres.name, (friendList) => {
           res.render('home', {title: 'My Message Console', userid: fbres.id,
-            username: fbres.name, message: message});
+            username: fbres.name, friendList: friendList});
         });
       } else {
         res.render('home', {title: 'My Message Console'});
@@ -94,10 +94,12 @@ app.post('/home', (req, res) => {
 });
 
 app.get('/message', (req, res) => {
-  storage.loadSavedMessage(req.query.id, (message) => {
+  storage.loadSavedMessage(req.query.fromid, req.query.toid, (message) => {
     res.render('message', {
       title: 'My Message Console',
-      userid: req.query.id,
+      fromid: req.query.fromid,
+      toid: req.query.toid,
+      toname: req.query.toname,
       message: message,
     });
   });
@@ -105,7 +107,7 @@ app.get('/message', (req, res) => {
 
 app.post('/savemessage', (req, res) => {
   // For now, we only support saving a message to yourself
-  storage.saveMessage(req.body.userid, req.body.userid, req.body.message, () => {
+  storage.saveMessage(req.body.fromid, req.body.toid, req.body.message, () => {
     res.redirect('/');
   });
 });
@@ -149,4 +151,19 @@ app.use((err, req, res, next) => {
 
 module.exports = app;
 
+// Internal functions
+function loadFriends(id, name, callback) {
+  let friendList = [];
 
+  FB.api('/me/friends', {fields: ['id', 'name']}, (fbres) => {
+    if (fbres && !fbres.error) {
+      friendList = fbres.data;
+    } else if (fbres.error) {
+      console.log('Error loading friends ' + JSON.stringify(fbres.error));
+    }
+
+    // Include you too in case you want to message yourself
+    friendList.unshift({'name': name, 'id': id});
+    callback(friendList);
+  });
+}

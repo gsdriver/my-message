@@ -32,10 +32,10 @@ const storage = (() => {
         }
       });
     },
-    // Loads the message that a user has created (for now, just the one they created for themselves)
-    loadSavedMessage: function(userid, callback) {
+    // Loads the message that a user has created
+    loadSavedMessage: function(fromid, toid, callback) {
       dynamodb.getItem({TableName: 'MyMessageData',
-        Key: {FromUserID: {S: userid}, ToUserID: {S: userid}}}, (err, data) => {
+        Key: {FromUserID: {S: fromid}, ToUserID: {S: toid}}}, (err, data) => {
         if (err) {
           console.log(err, err.stack);
           callback(null);

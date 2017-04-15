@@ -1,17 +1,17 @@
-html
-  head
-    title=title
-    link(href='/css/bootstrap.min.css', rel='stylesheet')
-  body
-    div.container
-      div.page-header
-        h1 Manage your Alexa Message
+extends layout
 
-        form(action='/savemessage', method='POST')
-          input(type="hidden", name="userid" value=userid)
-          if message
-            textarea(rows="4" class="form-control" cols="40" name="message") #{message}
-          else
-            textarea(rows="4" class="form-control" cols="40" name="message")
-          p
-          button.btn.btn-primary(type="submit") Save Message
+block content
+  div.container
+    div.page-header
+      h1
+        img(src="http://graph.facebook.com/#{toid}/picture")
+        |     Manage your Alexa Message for #{toname}
+      form(action='/savemessage', method='POST')
+        input(type="hidden", name="fromid" value=fromid)
+        input(type="hidden", name="toid" value=toid)
+        if message
+          textarea(rows="4" class="form-control" cols="40" name="message") #{message}
+        else
+          textarea(rows="4" class="form-control" cols="40" name="message")
+        p
+        button.btn.btn-primary(type="submit") Save Message

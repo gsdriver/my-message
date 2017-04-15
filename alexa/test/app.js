@@ -18,7 +18,7 @@ function BuildEvent(argv)
         "applicationId": "amzn1.ask.skill.fa911a26-47e2-467b-9d75-3fc8c2ca76a7"
       },
       //"attributes": {},
-      "attributes": {"messages":[{"from":"Garrett Vargas","message":"This isn't my first message","timestamp":"1492001018660"},{"from":"Ryan Vargas","message":"Hi Dad, nice to see you","timestamp":"1492001018660"},{"from":"Suger","message":"I like steak","timestamp":"1492001018660"}],"read":1},
+      "attributes": {"messages":[{"from":"Garrett Vargas","message":"This isn't my first message","timestamp":"1492001018660"},{"from":"Ryan Vargas","message":"Hi Dad, nice to see you","timestamp":"1492001018660"},{"from":"Suger","message":"I like steak","timestamp":"1492001018660"}],"read":0},
       //"attributes": {"song":{"date":"2017-03-31","title":"CRAZY ON YOU","artist":"HEART","comments":"This song is featured on Guitar Hero, which of course I am an expert at."}},
       "user": {
           "userId": "amzn1.ask.account.AGZKAFFHJJ54RQE4FKPXH3I5SU2QLHMROEHH4IXWTCADH7CZMD7LJ5NJ2MQ7QUC53ML2BY47X6TS6ZIRMNXEJLTY7VCVZTDPJH5RATRKMEIFN5JIFG63OQDW2WONCAWX3RESZHYK3T4LVWNJQYU5OJI75A7GBTDBVRJBD3BZXSQAQ3P7CPJ5SDW3OZKH4RDQCO2ILBKQGVSJYPI",

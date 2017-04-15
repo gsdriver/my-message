@@ -4,4 +4,6 @@ node_modules
 .idea
 build
 my-message.zip
+mymessage-alexa.zip
+testdb.js
 config.bat

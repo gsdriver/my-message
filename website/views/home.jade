@@ -1,19 +1,19 @@
-html
-  head
-    title=title
-    link(href='/css/bootstrap.min.css', rel='stylesheet')
-  body
-    div.container
-      div.jumbotron
-        h1 Hello!
+extends layout
 
-        if userid
-          p Welcome, #{username}
-          if message
-            p Your current message is "#{message}"
-          p
-            a.small(href="message/?id=#{userid}") Manage my message
-        else
-          p In order to use My Message, please log in with Facebook
-          p
-            a.btn.btn-primary(href="/login/facebook") Login now
+block content
+  div.container
+    div.jumbotron
+      if userid
+        h2 Hi #{username} - welcome to the Alexa Message companion site!
+        p
+          | You can leave a message for the following friends
+          ul.list-group
+            each friend in friendList
+              li.list-group-item(onclick="location.href='/message/?fromid=#{userid}&toid=#{friend.id}&toname=#{friend.name}';")
+                img(src="http://graph.facebook.com/#{friend.id}/picture")
+                |    #{friend.name}
+      else
+        h2 Welcome to the Alexa Message companion site!
+        p In order to use this site, please log in with Facebook
+        p
+          a.btn.btn-primary(href="/login/facebook") Login now
