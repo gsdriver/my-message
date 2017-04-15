@@ -16,28 +16,23 @@ module.exports = {
         'In order to use My Messages, please go to your Alexa app and link to your Facebook account');
     } else {
       // Get the ID and name from the access token so we can record the vote
+      console.log(this.event.session.user['accessToken']);
       FB.setAccessToken(this.event.session.user['accessToken']);
       FB.api('/me', {fields: ['id']}, (res) => {
         if (!res || res.error) {
           if (res) {
             console.log(res.error);
           }
-          this.emit(':tell', 'Sorry, an internal error occurred please try again later.');
+          this.emit(':tell', 'Sorry, an internal error occurred. Please try again later.');
         } else {
-        console.log(res.id);
           loadMessages(res.id, (err, messages) => {
-            if (messages.length == 1) {
-              this.emit(':tell', 'You have a message from ' + messages[0].from + ' - ' + messages[0].message);
-            } else if (messages.length > 1) {
-              let speech = 'You have ' + messages.length + ' messages. First message from ' + messages[0].from;
-              const reprompt = 'Say more to hear more messages.';
-
-              speech += (' - ' + messages[0].message + '. ' + reprompt);
+            if (err) {
+              this.emit(':tell', 'Sorry, an internal error occurred. Please try again later.');
+            } else {
+              // Just "replay" the first message
               this.attributes['messages'] = messages;
               this.attributes['read'] = 0;
-              this.emit(':ask', speech, reprompt);
-            } else {
-              this.emit(':tell', 'You have no messages');
+              this.emit('AMAZON.RepeatIntent');
             }
           });
         }
