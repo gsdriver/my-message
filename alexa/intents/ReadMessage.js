@@ -18,10 +18,11 @@ module.exports = {
 
 function readMessage(attributes, emit, readIncrement) {
   // See if we have messages that we can read
-  let speech;
+  let speech = attributes['speech'] ? attributes['speech'] : '';
   let reprompt;
   const messages = attributes['messages'];
 
+  attributes['speech'] = undefined;
   if (!messages) {
     emit(':tell', 'You haven\'t started reading messages yet.');
   } else {
@@ -43,17 +44,17 @@ function readMessage(attributes, emit, readIncrement) {
     reprompt += '.';
 
     if (read >= messages.length) {
-      speech = 'You have already read all messages. ' + reprompt;
+      speech += 'You have already read all messages. ' + reprompt;
     } else if (read < 0) {
-      speech = 'You were already on the first message. ' + reprompt;
+      speech += 'You were already on the first message. ' + reprompt;
     } else {
       // OK, we're going to read a message
       if (readIncrement > 0) {
-        speech = 'Your next message is ';
+        speech += 'Your next message is ';
       } else if (readIncrement == 0) {
-        speech = 'You have a message ';
+        speech += 'You have a message ';
       } else if (readIncrement < 0) {
-        speech = 'Your previous message is ';
+        speech += 'Your previous message is ';
       }
 
       speech += ('from ' + messages[read].from + '. ');
