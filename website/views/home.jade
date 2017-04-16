@@ -1,6 +1,10 @@
 extends layout
 
 block content
+  script(type="text/javascript" src="js/jquery.1.11.1.js")
+  script(type="text/javascript" src="js/jqBootstrapValidation.js")
+  script(type="text/javascript" src="js/jquery.isotope.js")
+  script(type="text/javascript" src="js/contact_me.js")
   div.container
     div.jumbotron
       if userid
@@ -17,3 +21,17 @@ block content
         p In order to use this site, please log in with Facebook
         p
           a.btn.btn-primary(href="/login/facebook") Login now
+  div.container
+    div.contact
+      h1.page-header Contact Me
+      h4 The companion Alexa application is under development! Contact me if you want to know when it launches
+      form(name="sentMessage" id="contactForm" novalidate)
+        div.form-group
+          input(type="text" class="form-control" id="name" placeholder="Name")
+        div.form-group
+          input(type="email" class="form-control" id="email" placeholder="Email")
+        div.form-group
+          textarea(name="message" id="message" class="form-control" rows="4" placeholder="Message")
+        div(id="success")
+        div.form-group
+          button.btn.btn-primary(type="submit") Send Message
