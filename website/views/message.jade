@@ -1,6 +1,17 @@
 extends layout
 
 block content
+  script(type="text/javascript").
+    function formatDate(date) {
+      return (new Date(parseInt(date))).toString();
+    }
+    window.onload = function() {
+      var timetag = document.getElementById("time");
+      var playtag = document.getElementById("played");
+
+      if (timetag) { timetag.innerHTML = " " + formatDate(timetag.innerHTML); }
+      if (playtag) { playtag.innerHTML = " " + formatDate(playtag.innerHTML); }
+    }
   div.container
     div.page-header
       h1
@@ -13,9 +24,11 @@ block content
           textarea(rows="4" class="form-control" cols="40" name="message") #{message}
           p
           if time
-            div.text-info Message created at #{time}
+            div.text-info Message created at
+              span(id="time") #{time}
           if playedtime
-            div.text-info Message played by #{toname} at #{playedtime}
+            div.text-info Message played by #{toname} at
+              span(id="played") #{playedtime}
         else
           textarea(rows="4" class="form-control" cols="40" name="message")
         p

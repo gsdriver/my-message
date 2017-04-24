@@ -97,24 +97,14 @@ app.post('/home', (req, res) => {
 
 app.get('/message', (req, res) => {
   storage.loadSavedMessage(req.query.fromid, req.query.toid, (message, time, playedtime) => {
-    // Parse the date (and played date if present)
-    let timeString;
-    let playedtimeString;
-
-    if (time) {
-      timeString = (new Date(parseInt(time))).toString();
-    }
-    if (playedtime) {
-      playedtimeString = (new Date(parseInt(playedtime))).toString();
-    }
     res.render('message', {
       title: 'My Message Console',
       fromid: req.query.fromid,
       toid: req.query.toid,
       toname: req.query.toname,
       message: message,
-      time: timeString,
-      playedtime: playedtimeString,
+      time: time,
+      playedtime: playedtime,
     });
   });
 });
