@@ -4,6 +4,8 @@
 
 'use strict';
 
+const request = require('request');
+
 module.exports = {
   readNext: function() {
     readMessage(this.attributes, this.emit, 1);
@@ -63,6 +65,14 @@ function readMessage(attributes, emit, readIncrement) {
       attributes['read'] = read;
 
       speech += ('.<break time="200ms"/> ' + reprompt);
+
+      // Mark it as read
+      markMessagePlayed(attributes['userid'], messages[read].fromid, (response) => {
+        if (response && response.Error) {
+          // Oops, error
+          console.log(response.Error);
+        }
+      });
     }
 
     emit(':ask', speech, reprompt);
@@ -99,4 +109,15 @@ function formatDate(date) {
 
   result += (' at ' + hour + ':' + messageDate.getMinutes() + ((isAm) ? ' AM' : ' PM'));
   return result;
+}
+
+function markMessagePlayed(userid, senderid, callback) {
+  // Call the service to pull the song details
+  const url = process.env.SERVICEURL + '/messageplayed';
+  const formData = {fromid: userid, toid: senderid};
+
+  request.post({url: url, formData: formData}, (err, res, body) => {
+    console.log(body);
+    callback(err, JSON.parse(body));
+  });
 }

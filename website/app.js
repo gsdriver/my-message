@@ -1,6 +1,8 @@
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
+const multer = require('multer');
+const upload = multer(); // for parsing multipart/form-data
 const passport = require('passport');
 const Strategy = require('passport-facebook').Strategy;
 const storage = require('./storage');
@@ -50,7 +52,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname, 'public')));
 // Initialize Passport and restore authentication state, if any, from the session.
 app.use(passport.initialize());
@@ -94,13 +96,25 @@ app.post('/home', (req, res) => {
 });
 
 app.get('/message', (req, res) => {
-  storage.loadSavedMessage(req.query.fromid, req.query.toid, (message) => {
+  storage.loadSavedMessage(req.query.fromid, req.query.toid, (message, time, playedtime) => {
+    // Parse the date (and played date if present)
+    let timeString;
+    let playedtimeString;
+
+    if (time) {
+      timeString = (new Date(parseInt(time))).toString();
+    }
+    if (playedtime) {
+      playedtimeString = (new Date(parseInt(playedtime))).toString();
+    }
     res.render('message', {
       title: 'My Message Console',
       fromid: req.query.fromid,
       toid: req.query.toid,
       toname: req.query.toname,
       message: message,
+      time: timeString,
+      playedtime: playedtimeString,
     });
   });
 });
@@ -137,6 +151,23 @@ app.get('/getmessages', (req, res, next) => {
       res.json(myMessages);
     }
   });
+});
+
+// Marks a message as played
+app.post('/messageplayed', upload.array(), (req, res, next) => {
+  // Marks a message as played
+  if (req.body.fromid && req.body.toid) {
+    storage.markMessagePlayed(req.body.fromid, req.body.toid, (err) => {
+      // Suppress the actual error to the caller
+      if (err) {
+        res.json({Error: 'Request failed'});
+      } else {
+        res.json({});
+      }
+    });
+  } else {
+    res.json({Error: 'Required Parameters missing'});
+  }
 });
 
 // catch 404 and forward to error handler

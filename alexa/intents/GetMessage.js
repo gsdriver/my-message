@@ -38,6 +38,7 @@ module.exports = {
                 }
 
                 // Just "replay" the first message
+                this.attributes['userid'] = res.id;
                 this.attributes['messages'] = messages;
                 this.attributes['read'] = 0;
                 this.emit('AMAZON.RepeatIntent');
@@ -52,8 +53,7 @@ module.exports = {
 
 function loadMessages(userid, callback) {
   // Call the service to pull the song details
-  let url = 'http://sample-env.4awvdjvbax.us-west-2.elasticbeanstalk.com/getmessages/?';
-
+  let url = process.env.SERVICEURL + '/getmessages/?';
   url += querystring.stringify({userid: userid});
   request.get(url, (err, res, body) => {
     console.log(body);

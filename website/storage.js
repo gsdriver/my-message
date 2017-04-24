@@ -38,11 +38,13 @@ const storage = (() => {
         Key: {FromUserID: {S: fromid}, ToUserID: {S: toid}}}, (err, data) => {
         if (err) {
           console.log(err, err.stack);
-          callback(null);
+          callback();
         } else if (data.Item === undefined) {
-          callback(null);
+          callback();
         } else {
-          callback(data.Item.Message.S);
+          callback((data.Item.Message ? data.Item.Message.S : null),
+            (data.Item.TimeStamp ? data.Item.TimeStamp.S : null),
+            (data.Item.PlayedTimeStamp ? data.Item.PlayedTimeStamp.S : null));
         }
       });
     },
@@ -78,8 +80,10 @@ const storage = (() => {
                 name = 'Unknown user';
               }
 
-              const msgData = {from: name, message: message.Message.S,
-                timestamp: message.TimeStamp.S};
+              const msgData = {from: name, fromid: message.FromUserID.S,
+                message: (message.Message) ? message.Message.S : null,
+                timestamp: (message.TimeStamp) ? message.TimeStamp.S : null,
+                played: (message.PlayedTimeStamp) ? message.PlayedTimeStamp.S : null};
               messages.push(msgData);
             });
 
@@ -113,6 +117,23 @@ const storage = (() => {
         }
         if (callback) {
           callback();
+        }
+      });
+    },
+    markMessagePlayed: function(fromUserID, toUserID, callback) {
+      // Marks a message as played
+      dynamodb.updateItem({TableName: 'MyMessageData',
+        Key: {FromUserID: {S: fromUserID},
+          ToUserID: {S: toUserID}},
+        UpdateExpression: 'set PlayedTimeStamp = :val',
+        ConditionExpression: 'attribute_exists(FromUserID) and attribute_exists(ToUserID)',
+        ExpressionAttributeValues: {':val': {S: Date.now().toString()}},
+        ReturnValues: 'NONE'}, (err, data) => {
+        if (err) {
+          console.log(err, err.stack);
+        }
+        if (callback) {
+          callback(err);
         }
       });
     },

@@ -11,6 +11,11 @@ block content
         input(type="hidden", name="toid" value=toid)
         if message
           textarea(rows="4" class="form-control" cols="40" name="message") #{message}
+          p
+          if time
+            div.text-info Message created at #{time}
+          if playedtime
+            div.text-info Message played by #{toname} at #{playedtime}
         else
           textarea(rows="4" class="form-control" cols="40" name="message")
         p
