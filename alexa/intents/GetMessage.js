@@ -31,11 +31,33 @@ module.exports = {
               if (messages.length == 0) {
                 this.emit(':tell', 'You do not have any messages.');
               } else {
-                if (messages.length == 1) {
-                  this.attributes['speech'] = 'You have one message. <break time="200ms"/>';
-                } else {
-                  this.attributes['speech'] = 'You have ' + messages.length + ' messages. <break time="200ms"/>';
+                // Count the number of played and unplayed messages
+                let playedCount = 0;
+                let unplayedCount = 0;
+
+                for (let i = 0; i < messages.length; i++) {
+                  if (messages[i].played) {
+                    playedCount++;
+                  } else {
+                    unplayedCount++;
+                  }
                 }
+
+                if (unplayedCount == 0) {
+                  this.attributes['speech'] = 'You have no unread messages ';
+                } else if (unplayedCount == 1) {
+                  this.attributes['speech'] = 'You have one unread message ';
+                } else {
+                  this.attributes['speech'] = 'You have ' + unplayedCount + ' unread messages ';
+                }
+
+                if (playedCount == 1) {
+                  this.attributes['speech'] += 'and one read message. ';
+                } else if (playedCount > 1) {
+                  this.attributes['speech'] += ('and ' + playedCount + ' read messages. ');
+                }
+
+                this.attributes['speech'] += '<break time="200ms"/>';
 
                 // Just "replay" the first message
                 this.attributes['userid'] = res.id;

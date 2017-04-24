@@ -105,7 +105,7 @@ function formatDate(date) {
 function markMessagePlayed(userid, senderid, callback) {
   // Call the service to pull the song details
   const url = process.env.SERVICEURL + '/messageplayed';
-  const formData = {fromid: userid, toid: senderid};
+  const formData = {fromid: senderid, toid: userid};
 
   request.post({url: url, formData: formData}, (err, res, body) => {
     console.log(body);

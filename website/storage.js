@@ -122,14 +122,21 @@ const storage = (() => {
     },
     markMessagePlayed: function(fromUserID, toUserID, callback) {
       // Marks a message as played
+      const expireTime = new Date();
+      expireTime.setDate(expireTime.getDate() + 7);
+
       dynamodb.updateItem({TableName: 'MyMessageData',
         Key: {FromUserID: {S: fromUserID},
           ToUserID: {S: toUserID}},
-        UpdateExpression: 'set PlayedTimeStamp = :val',
-        ConditionExpression: 'attribute_exists(FromUserID) and attribute_exists(ToUserID)',
-        ExpressionAttributeValues: {':val': {S: Date.now().toString()}},
+        UpdateExpression: 'set PlayedTimeStamp = :val, ExpireTime = :val2',
+        ConditionExpression: 'FromUserID = :val3 and ToUserID = :val4',
+        ExpressionAttributeValues: {':val': {S: Date.now().toString()},
+                                    ':val2': {S: expireTime.getTime().toString()},
+                                    ':val3': {S: fromUserID},
+                                    ':val4': {S: toUserID}},
         ReturnValues: 'NONE'}, (err, data) => {
         if (err) {
+          console.log('***Error marking message from ' + fromUserID + ' to ' + toUserID);
           console.log(err, err.stack);
         }
         if (callback) {
