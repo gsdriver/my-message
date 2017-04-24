@@ -134,7 +134,17 @@ app.get('/getmessages', (req, res, next) => {
       const myMessages = [];
       let i;
 
-      messages.sort((a, b) => (b.timestamp - a.timestamp));
+      messages.sort((a, b) => {
+        // unplayed first -- then newest to oldest
+        if (a.played && !b.played) {
+          return 1;
+        } else if (!a.played && b.played) {
+          return -1;
+        } else {
+          return (b.timestamp - a.timestamp);
+        }
+      });
+
       for (i = 0; i < Math.min(100, messages.length); i++) {
         myMessages.push(messages[i]);
       }
