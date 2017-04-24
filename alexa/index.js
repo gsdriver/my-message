@@ -9,6 +9,9 @@ const handlers = {
   'LaunchRequest': function() {
     this.emit('GetMessageIntent');
   },
+  'SessionEndedRequest': function() {
+    this.emit('AMAZON.CancelIntent');
+  },
   'AMAZON.HelpIntent': function() {
     this.emit('GetMessageIntent');
   },

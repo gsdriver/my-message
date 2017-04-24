@@ -83,8 +83,6 @@ function formatDate(date) {
   const now = new Date();
   const messageDate = new Date(parseInt(date));
   let result;
-  const monthMap = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
-    'August', 'September', 'October', 'November', 'December'];
 
   if ((now.getMonth() == messageDate.getMonth()) && (now.getDate() == messageDate.getDate())) {
     result = 'today';
@@ -95,19 +93,12 @@ function formatDate(date) {
       result = 'yesterday';
     } else {
       // Read the month and day
-      result = monthMap[messageDate.getMonth()] + ' ' + messageDate.getDate();
+      result = messageDate.toLocaleDateString([], {month: 'long', day: '2-digit'});
     }
   }
 
   // And the time (hour and minute)
-  let hour = messageDate.getHours();
-  let isAm = true;
-  if (hour > 12) {
-    hour -= 12;
-    isAm = false;
-  }
-
-  result += (' at ' + hour + ':' + messageDate.getMinutes() + ((isAm) ? ' AM' : ' PM'));
+  result += (' at ' + messageDate.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}));
   return result;
 }
 
