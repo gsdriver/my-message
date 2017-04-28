@@ -7,6 +7,7 @@
 const request = require('request');
 const FB = require('facebook-node');
 const querystring = require('querystring');
+const utils = require('alexa-speech-utils')();
 
 module.exports = {
   handleIntent: function() {
@@ -43,19 +44,9 @@ module.exports = {
                   }
                 }
 
-                if (unplayedCount == 0) {
-                  this.attributes['speech'] = 'You have no unread messages ';
-                } else if (unplayedCount == 1) {
-                  this.attributes['speech'] = 'You have one unread message ';
-                } else {
-                  this.attributes['speech'] = 'You have ' + unplayedCount + ' unread messages ';
-                }
-
-                if (playedCount == 1) {
-                  this.attributes['speech'] += 'and one read message. ';
-                } else if (playedCount > 1) {
-                  this.attributes['speech'] += ('and ' + playedCount + ' read messages. ');
-                }
+                this.attributes['speech'] = 'You have '
+                  + utils.numberOfItems(unplayedCount, 'unread message ', 'unread messages ')
+                  + 'and ' + utils.numberOfItems(playedCount, 'red message. ', 'red messages. ');
 
                 this.attributes['speech'] += '<break time="200ms"/>';
 

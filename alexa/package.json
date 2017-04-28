@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "alexa-sdk": "^1.0.8",
+    "alexa-speech-utils": "0.0.1",
     "facebook-node": "0.0.3",
     "request": "^2.81.0"
   },

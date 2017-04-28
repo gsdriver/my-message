@@ -5,6 +5,7 @@
 'use strict';
 
 const request = require('request');
+const utils = require('alexa-speech-utils')();
 
 module.exports = {
   readNext: function() {
@@ -59,7 +60,8 @@ function readMessage(attributes, emit, readIncrement) {
         speech += 'Your previous message is ';
       }
 
-      speech += ('from ' + messages[read].from + ' sent ' + formatDate(messages[read].timestamp) + '. ');
+      speech += ('from ' + messages[read].from + ' sent ' +
+        utils.relativeDate(parseInt(messages[read].timestamp), {includeTime: true}) + '. ');
       speech += '<break time="200ms"/>';
       speech += messages[read].message;
       attributes['read'] = read;
@@ -77,29 +79,6 @@ function readMessage(attributes, emit, readIncrement) {
 
     emit(':ask', speech, reprompt);
   }
-}
-
-function formatDate(date) {
-  const now = new Date();
-  const messageDate = new Date(parseInt(date));
-  let result;
-
-  if ((now.getMonth() == messageDate.getMonth()) && (now.getDate() == messageDate.getDate())) {
-    result = 'today';
-  } else {
-    // Try yesterday
-    now.setDate(now.getDate() - 1);
-    if ((now.getMonth() == messageDate.getMonth()) && (now.getDate() == messageDate.getDate())) {
-      result = 'yesterday';
-    } else {
-      // Read the month and day
-      result = messageDate.toLocaleDateString([], {month: 'long', day: '2-digit'});
-    }
-  }
-
-  // And the time (hour and minute)
-  result += (' at ' + messageDate.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}));
-  return result;
 }
 
 function markMessagePlayed(userid, senderid, callback) {
